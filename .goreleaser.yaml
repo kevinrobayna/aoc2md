@@ -40,7 +40,7 @@ brews:
   - repository:
       owner: "kevinrobayna"
       name: homebrew-tap
-      token: "{{ .Env.GITHUB_TOKEN }}"
+      token: "{{ .Env.HOMEBREW_TAPS_PAT }}"
     commit_author:
       name: "Kevin Robayna"
       email: "me@kevinrobayna.com"

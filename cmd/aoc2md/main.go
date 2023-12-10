@@ -63,14 +63,14 @@ func main() {
 				ReportTimestamp: false,
 				Prefix:          "🎄aoc2md🎄",
 			})
-			session := Session(ctx.String("session_id"))
+			session := Session(ctx.String("session"))
+			day := ctx.Int("day")
+			year := ctx.Int("year")
+			slog.SetDefault(slog.New(handler).With("day", day, "year", year))
 			if session == "" {
 				slog.Error("The session is required so that you can download your input and part2. see --help")
 				return nil
 			}
-			day := ctx.Int("day")
-			year := ctx.Int("year")
-			slog.SetDefault(slog.New(handler).With("day", day, "year", year))
 			if year < 2015 {
 				slog.Error("Advent Of Code started on 2015, there are no problems before then")
 				return nil

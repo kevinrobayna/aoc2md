@@ -36,6 +36,16 @@ archives:
       - goos: windows
         format: zip
 
+brews:
+  - repository:
+      owner: "kevinrobayna"
+      name: homebrew-tap
+      token: "{{ .Env.GITHUB_TOKEN }}"
+    commit_author:
+      name: "Kevin Robayna"
+      email: "me@kevinrobayna.com"
+    homepage: "https://kevinrobayna.com "
+
 changelog:
   sort: asc
   filters:

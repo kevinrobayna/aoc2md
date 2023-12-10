@@ -35,9 +35,9 @@ func main() {
 		Version:     version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "session_id",
-				Usage:    "Session ID granted by adventofcode.com when you log in",
-				Required: true,
+				Name:     "session",
+				Usage:    "Session granted by adventofcode.com when you log in",
+				Required: false,
 				EnvVars:  []string{"AOC_SESSION_ID"},
 			},
 			&cli.IntFlag{
@@ -64,6 +64,10 @@ func main() {
 				Prefix:          "🎄aoc2md🎄",
 			})
 			session := Session(ctx.String("session_id"))
+			if session == "" {
+				slog.Error("The session is required so that you can download your input and part2. see --help")
+				return nil
+			}
 			day := ctx.Int("day")
 			year := ctx.Int("year")
 			slog.SetDefault(slog.New(handler).With("day", day, "year", year))

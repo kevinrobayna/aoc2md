@@ -31,5 +31,5 @@ aoc2md --day 1 --year 2015
 Remember to make the session available through the env variable `AOC_SESSION` or directly in the command like so:
 
 ```sh
-aoc2md --session_id your_secret_value
+aoc2md --session your_secret_value
 ```

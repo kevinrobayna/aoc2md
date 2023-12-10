@@ -2,7 +2,7 @@ PROG = bin/aoc2md
 MODULE = github.com/kevinrobayna/aoc2md
 GIT_SHA = $(shell git rev-parse --short HEAD)
 DATE = $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-BUILD_COMMAND = CGO_ENABLED=0 go build -ldflags "-X 'main.Sha=$(GIT_SHA)' -X 'main.Date=$(DATE)'"
+BUILD_COMMAND = CGO_ENABLED=0 go build -ldflags "-X 'main.version=$(GIT_SHA)' -X 'main.date=$(DATE)'"
 LINT_COMMAND = golangci-lint run
 
 .PHONY: clean

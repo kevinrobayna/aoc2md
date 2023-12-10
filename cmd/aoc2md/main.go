@@ -14,9 +14,10 @@ import (
 )
 
 var (
-	AppName = "aoc2md"
-	Sha     = "unknown"
-	Date    = "unknown"
+	appName = "aoc2md"
+	version = "unknown"
+	commit  = "unknown"
+	date    = "unknown"
 )
 
 type Session string
@@ -24,14 +25,14 @@ type Session string
 func main() {
 	cli.VersionPrinter = func(_ *cli.Context) {
 		_, _ = fmt.Printf(
-			"Application: %s\nSha: %s\nGo Version: %v\nGo OS/Arch: %v/%v\nBuilt at: %v\n",
-			AppName, Sha, runtime.Version(), runtime.GOOS, runtime.GOARCH, Date,
+			"Application: %s\nVersion: %s\nCommit: %s\nGo Version: %v\nGo OS/Arch: %v/%v\nBuilt at: %v\n",
+			appName, version, commit, runtime.Version(), runtime.GOOS, runtime.GOARCH, date,
 		)
 	}
 	app := &cli.App{
-		Name:        AppName,
+		Name:        appName,
 		Description: "CLI to help initialise the solution for Advent of Code 🎄. Solving it though it on you 😉",
-		Version:     Sha,
+		Version:     version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "session_id",

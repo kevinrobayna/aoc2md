@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: '0 10 * * 1' # run "At 10:00 on Monday"
+    - cron: "0 10 * * 1" # run "At 10:00 on Monday"
   workflow_call:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,7 +20,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: 'stable'
+          go-version: "stable"
           check-latest: true
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: 'stable'
+          go-version: "stable"
           check-latest: true
       - name: Checkout code
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v4
         with:
-          go-version: 'stable'
+          go-version: "stable"
           check-latest: true
       - name: Checkout
         uses: actions/checkout@v4

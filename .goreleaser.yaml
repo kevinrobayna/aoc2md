@@ -44,8 +44,8 @@ brews:
     commit_author:
       name: "Kevin Robayna"
       email: "me@kevinrobayna.com"
-    homepage: "https://kevinrobayna.com "
-    description: The aoc2md tool to generate project setup 🎄"
+    homepage: "https://kevinrobayna.com"
+    description: "The aoc2md tool to generate project setup 🎄"
 
 changelog:
   sort: asc

@@ -38,7 +38,7 @@ func main() {
 				Name:     "session",
 				Usage:    "Session granted by adventofcode.com when you log in",
 				Required: false,
-				EnvVars:  []string{"AOC_SESSION_ID"},
+				EnvVars:  []string{"AOC_SESSION"},
 			},
 			&cli.IntFlag{
 				Name:        "day",

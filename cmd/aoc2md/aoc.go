@@ -24,6 +24,10 @@ func prepareRequest(url string, session Session) (*http.Request, error) {
 	}
 	req.AddCookie(cookie)
 
+	// This is for us to tell AoC maitainer where the requests are coming from.
+	// We aren't required to do this but we want to be good citizens
+	req.Header.Add("User-Agent", "github.com/kevinrobayna/aoc2md")
+
 	return req, nil
 }
 

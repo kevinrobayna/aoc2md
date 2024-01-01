@@ -3,10 +3,10 @@ module github.com/kevinrobayna/aoc2md
 go 1.21
 
 require (
-	github.com/JohannesKaufmann/html-to-markdown v1.4.2
+	github.com/JohannesKaufmann/html-to-markdown v1.5.0
 	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/charmbracelet/log v0.3.1
-	github.com/urfave/cli/v2 v2.26.0
+	github.com/urfave/cli/v2 v2.27.1
 )
 
 require (

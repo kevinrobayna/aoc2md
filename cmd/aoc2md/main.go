@@ -88,7 +88,7 @@ func main() {
 				return nil
 			}
 
-			path := filepath.Join(fmt.Sprint(year), fmt.Sprintf("day-%01d", day))
+			path := filepath.Join(fmt.Sprint(year), fmt.Sprintf("day-%02d", day))
 			err := os.MkdirAll(path, os.ModePerm)
 			if err != nil {
 				slog.Error("Error creating folder", "err", err)

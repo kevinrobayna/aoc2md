@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -57,10 +56,12 @@ func GenerateTemplate(args Args) error {
 	description, err := fetchDescription(year, day, session)
 	if err != nil {
 		slog.Error("Whopsy, the elf was not able to fetch the problem for you", "err", err)
+		return nil
 	}
 	err = writeToFile(filepath.Join(path, "README.md"), description)
 	if err != nil {
 		slog.Error("Unable to write description into README.md", "err", err)
+		return nil
 	}
 
 	if _, err := os.Stat(filepath.Join(path, "input.txt")); errors.Is(err, os.ErrNotExist) {
@@ -68,10 +69,12 @@ func GenerateTemplate(args Args) error {
 		input, err := fetchInput(year, day, session)
 		if err != nil {
 			slog.Error("Whopsy, the elf was not able to fetch the problem for you", "err", err)
+			return nil
 		}
 		err = writeToFile(filepath.Join(path, "input.txt"), input)
 		if err != nil {
 			slog.Error("Unable to write input into input.txt", "err", err)
+			return nil
 		}
 	} else {
 		slog.Warn("Skipping downloading input, file already exist")
@@ -87,24 +90,26 @@ func GenerateTemplate(args Args) error {
 		}
 
 		if _, err := os.Stat(filepath.Join(path, generateSolutionName(args.Language))); errors.Is(err, os.ErrNotExist) {
+			slog.Info("Creating template for problem")
+
+			outputFile, err := os.Create(filepath.Join(path, generateSolutionName(args.Language)))
+			if err != nil {
+				slog.Error("Error creating file", "err", err)
+				return err
+			}
+			defer outputFile.Close()
+
+			data := templateData{
+				year: args.Year,
+				day:  args.Day,
+			}
+			err = tmpl.Execute(outputFile, data)
+			if err != nil {
+				slog.Error("Error executing template", "err", err)
+				return err
+			}
+		} else {
 			slog.Warn("Skipping code template generation, file already exist")
-		}
-
-		// Create an output file
-		outputFile, err := os.Create(filepath.Join(path, generateSolutionName(args.Language)))
-		if err != nil {
-			log.Fatalf("Error creating file: %v", err)
-		}
-		defer outputFile.Close()
-
-		// Execute the template with data
-		data := templateData{
-			year: args.Year,
-			day:  args.Day,
-		}
-		err = tmpl.Execute(outputFile, data)
-		if err != nil {
-			log.Fatalf("Error executing template: %v", err)
 		}
 	}
 

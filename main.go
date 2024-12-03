@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"runtime"
+	"slices"
 	"time"
 
 	"github.com/charmbracelet/log"
@@ -34,6 +35,7 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "session",
+				Aliases:  []string{"s"},
 				Usage:    "Session granted by adventofcode.com when you log in",
 				Required: false,
 				EnvVars:  []string{"AOC_SESSION"},
@@ -54,6 +56,23 @@ func main() {
 				Value:       time.Now().Year(),
 				DefaultText: fmt.Sprint(time.Now().Year()),
 			},
+			&cli.StringFlag{
+				Name:     "lang",
+				Aliases:  []string{"l"},
+				Usage:    "Programming language to generate the solution for",
+				Required: false,
+				Value:    "none",
+				Action: func(ctx *cli.Context, v string) error {
+					if v == "" {
+						return nil
+					}
+					allowedValues := []string{string(internal.Ruby)}
+					if slices.Contains(allowedValues, v) {
+						return nil
+					}
+					return fmt.Errorf("Invalid language provided '%v', we currently support: %v", v, allowedValues)
+				},
+			},
 		},
 		Action: func(ctx *cli.Context) error {
 			handler := log.NewWithOptions(os.Stderr, log.Options{
@@ -64,7 +83,8 @@ func main() {
 			session := internal.Session(ctx.String("session"))
 			day := ctx.Int("day")
 			year := ctx.Int("year")
-			slog.SetDefault(slog.New(handler).With("day", day, "year", year))
+			lang := ctx.String("lang")
+			slog.SetDefault(slog.New(handler).With("day", day, "year", year, "lang", lang))
 			if session == "" {
 				slog.Error("The session is required so that you can download your input and part2. see --help")
 				return nil
@@ -89,7 +109,7 @@ func main() {
 				Session:  session,
 				Day:      day,
 				Year:     year,
-				Language: internal.None,
+				Language: internal.Template(lang),
 			}
 			return internal.GenerateTemplate(args)
 		},

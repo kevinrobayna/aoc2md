@@ -1,9 +1,12 @@
 package internal
 
 import (
+	"embed"
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -29,6 +32,14 @@ type Args struct {
 	Day      int
 	Year     int
 }
+
+type templateData struct {
+	year int
+	day  int
+}
+
+//go:embed templates/*.tmpl
+var templateFS embed.FS
 
 func GenerateTemplate(args Args) error {
 	year := args.Year
@@ -63,7 +74,38 @@ func GenerateTemplate(args Args) error {
 			slog.Error("Unable to write input into input.txt", "err", err)
 		}
 	} else {
-		slog.Warn("Skipping downloading input")
+		slog.Warn("Skipping downloading input, file already exist")
+	}
+
+	if args.Language == None {
+		slog.Warn("Skipping code template generation")
+	} else {
+		tmpl, err := loadTemplate(string(args.Language))
+		if err != nil {
+			slog.Error("Error loading template", "err", err)
+			return err
+		}
+
+		if _, err := os.Stat(filepath.Join(path, generateSolutionName(args.Language))); errors.Is(err, os.ErrNotExist) {
+			slog.Warn("Skipping code template generation, file already exist")
+		}
+
+		// Create an output file
+		outputFile, err := os.Create(filepath.Join(path, generateSolutionName(args.Language)))
+		if err != nil {
+			log.Fatalf("Error creating file: %v", err)
+		}
+		defer outputFile.Close()
+
+		// Execute the template with data
+		data := templateData{
+			year: args.Year,
+			day:  args.Day,
+		}
+		err = tmpl.Execute(outputFile, data)
+		if err != nil {
+			log.Fatalf("Error executing template: %v", err)
+		}
 	}
 
 	return nil
@@ -71,6 +113,14 @@ func GenerateTemplate(args Args) error {
 
 func generatePath(year, day int) string {
 	return filepath.Join(fmt.Sprint(year), fmt.Sprintf("day-%02d", day))
+}
+
+func generateSolutionName(lang Template) string {
+	if lang == Ruby {
+		return "main.rb"
+	}
+	slog.Error("unknown language", "lang", lang)
+	return "main.txt"
 }
 
 func prepareRequest(url string, session Session) (*http.Request, error) {
@@ -156,4 +206,15 @@ func writeToFile(filePath, content string) error {
 	}
 
 	return nil
+}
+
+func loadTemplate(name string) (*template.Template, error) {
+	// Read the template content from the embedded filesystem
+	templateContent, err := templateFS.ReadFile("templates/" + name + ".tmpl")
+	if err != nil {
+		return nil, err
+	}
+
+	// Parse the template from the content
+	return template.New(name).Parse(string(templateContent))
 }

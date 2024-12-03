@@ -11,7 +11,7 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exportloopref
+    - copyloopvar
     - gosec
     - exhaustive
     - gofumpt

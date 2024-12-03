@@ -33,3 +33,9 @@ Remember to make the session available through the env variable `AOC_SESSION` or
 ```sh
 aoc2md --session your_secret_value
 ```
+
+You can now generate a template for your solution by specifying the language you want to use
+
+```sh
+aoc2md --lang ruby
+```

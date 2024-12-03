@@ -13,7 +13,7 @@ before:
     - go mod tidy
 
 builds:
-  - main: ./cmd/aoc2md/
+  - main: aoc2md
     env:
       - CGO_ENABLED=0
     goos:

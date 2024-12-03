@@ -19,13 +19,13 @@ darwin: $(PROG:=.darwin_amd64)
 linux: $(PROG:=.linux_amd64)
 
 bin/%.linux_amd64:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(BUILD_COMMAND) -a -o $@ cmd/$*/*.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(BUILD_COMMAND) -a -o $@ main.go
 
 bin/%.darwin_amd64:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(BUILD_COMMAND) -a -o $@ cmd/$*/*.go
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 $(BUILD_COMMAND) -a -o $@ main.go
 
 bin/%:
-	$(BUILD_COMMAND) -o $@ cmd/$*/*.go
+	$(BUILD_COMMAND) -o $@ main.go
 
 .PHONY: lint
 lint:

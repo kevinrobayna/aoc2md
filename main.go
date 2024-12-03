@@ -1,16 +1,16 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"runtime"
 	"time"
 
 	"github.com/charmbracelet/log"
 	"github.com/urfave/cli/v2"
+
+	"github.com/kevinrobayna/aoc2md/internal"
 )
 
 var (
@@ -19,8 +19,6 @@ var (
 	commit  = "unknown"
 	date    = "unknown"
 )
-
-type Session string
 
 func main() {
 	cli.VersionPrinter = func(_ *cli.Context) {
@@ -63,7 +61,7 @@ func main() {
 				ReportTimestamp: false,
 				Prefix:          "🎄aoc2md🎄",
 			})
-			session := Session(ctx.String("session"))
+			session := internal.Session(ctx.String("session"))
 			day := ctx.Int("day")
 			year := ctx.Int("year")
 			slog.SetDefault(slog.New(handler).With("day", day, "year", year))
@@ -87,58 +85,17 @@ func main() {
 				slog.Error("Advent Of Code problems are only available from the 1st of December to the 25th")
 				return nil
 			}
-
-			path := filepath.Join(fmt.Sprint(year), fmt.Sprintf("day-%02d", day))
-			err := os.MkdirAll(path, os.ModePerm)
-			if err != nil {
-				slog.Error("Error creating folder", "err", err)
-				return nil
+			args := internal.Args{
+				Session:  session,
+				Day:      day,
+				Year:     year,
+				Language: internal.None,
 			}
-
-			slog.Info("Fetching Problem Description")
-			description, err := FetchDescription(year, day, session)
-			if err != nil {
-				slog.Error("Whopsy, the elf was not able to fetch the problem for you", "err", err)
-			}
-			err = writeToFile(filepath.Join(path, "README.md"), description)
-			if err != nil {
-				slog.Error("Unable to write description into README.md", "err", err)
-			}
-
-			if _, err := os.Stat(filepath.Join(path, "input.txt")); errors.Is(err, os.ErrNotExist) {
-				slog.Info("Fetching Problem Input")
-				input, err := FetchInput(year, day, session)
-				if err != nil {
-					slog.Error("Whopsy, the elf was not able to fetch the problem for you", "err", err)
-				}
-				err = writeToFile(filepath.Join(path, "input.txt"), input)
-				if err != nil {
-					slog.Error("Unable to write input into input.txt", "err", err)
-				}
-			} else {
-				slog.Warn("Skipping downloading input")
-			}
-
-			return nil
+			return internal.GenerateTemplate(args)
 		},
 	}
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func writeToFile(filePath, content string) error {
-	file, err := os.Create(filePath)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	_, err = file.WriteString(content)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

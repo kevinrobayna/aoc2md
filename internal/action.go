@@ -4,12 +4,12 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"html/template"
 	"io"
 	"log/slog"
 	"net/http"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/JohannesKaufmann/html-to-markdown/plugin"
@@ -214,7 +214,6 @@ func writeToFile(filePath, content string) error {
 }
 
 func loadTemplate(name string) (*template.Template, error) {
-	// Read the template content from the embedded filesystem
 	templateContent, err := templateFS.ReadFile("templates/" + name + ".tmpl")
 	if err != nil {
 		return nil, err

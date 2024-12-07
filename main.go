@@ -66,7 +66,10 @@ func main() {
 					if v == "" {
 						return nil
 					}
-					allowedValues := []string{string(internal.Ruby)}
+					allowedValues := []string{
+						string(internal.Ruby),
+						string(internal.Python),
+					}
 					if slices.Contains(allowedValues, v) {
 						return nil
 					}

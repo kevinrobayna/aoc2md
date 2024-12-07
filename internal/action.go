@@ -21,8 +21,9 @@ type Session string
 type Template string
 
 const (
-	None Template = "none"
-	Ruby Template = "ruby"
+	None   Template = "none"
+	Ruby   Template = "ruby"
+	Python Template = "python"
 )
 
 type Args struct {
@@ -121,11 +122,17 @@ func generatePath(year, day int) string {
 }
 
 func generateSolutionName(lang Template) string {
-	if lang == Ruby {
+	switch lang {
+	case Ruby:
 		return "main.rb"
+	case Python:
+		return "main.py"
+	case None:
+		return ""
+	default:
+		slog.Error("unknown language", "lang", lang)
+		return "main.txt"
 	}
-	slog.Error("unknown language", "lang", lang)
-	return "main.txt"
 }
 
 func prepareRequest(url string, session Session) (*http.Request, error) {

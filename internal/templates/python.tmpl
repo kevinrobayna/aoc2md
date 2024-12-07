@@ -1,0 +1,29 @@
+from pathlib import Path
+from textwrap import dedent
+
+
+def compare_solutions(expected: int, actual: int):
+    if expected != actual:
+        raise Exception(f"Expected #{expected} but got #{actual}")
+    print(f"Congratulations! Got expected result ({expected})")
+
+
+def read_file(filename: str) -> str:
+    return Path(__file__).parent.joinpath(filename).read_text()
+
+
+def solve(input: str) -> int:
+    return len(input)
+
+
+def solve2(input: str) -> int:
+    return len(input)
+
+
+if __name__ == "__main__":
+    test = dedent("""
+    """).strip()
+    compare_solutions(0, solve(test))
+    print(f"Part1, {solve(read_file('input.txt'))}")
+    compare_solutions(0, solve2(test))
+    print(f"Part2, {solve2(read_file('input.txt'))}")

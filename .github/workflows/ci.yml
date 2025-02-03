@@ -55,14 +55,6 @@ jobs:
         with:
           version: latest
           args: --timeout 5m
-      - uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: latest
-          args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HOMEBREW_TAPS_PAT: ${{ secrets.HOMEBREW_TAPS_PAT }}
   goreleaser-check:
     name: GoRelease
     runs-on: ubuntu-latest
@@ -79,8 +71,8 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: latest
-          args: release --clean
+          version: ~> v2
+          args: check 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAPS_PAT: ${{ secrets.HOMEBREW_TAPS_PAT }}

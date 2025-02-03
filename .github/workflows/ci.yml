@@ -2,11 +2,13 @@ name: ci
 permissions: {} # no need any permissions
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
   schedule:
-    - cron: "0 10 * * 1" # run "At 10:00 on Monday"
+    - cron: 0 10 * * 1 # run "At 10:00 on Monday"
   workflow_call:
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -20,7 +22,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: "stable"
+          go-version: stable
           check-latest: true
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,7 +46,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: "stable"
+          go-version: stable
           check-latest: true
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,6 +55,27 @@ jobs:
         with:
           version: latest
           args: --timeout 5m
+  goreleaser-check:
+    name: GoReleaserCheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          check-latest: true
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Check release file
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: ~> v2
+          args: check 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_TAPS_PAT: ${{ secrets.HOMEBREW_TAPS_PAT }}
   vuln:
     name: Vuln
     runs-on: ubuntu-latest
@@ -61,7 +84,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: "stable"
+          go-version: stable
           check-latest: true
       - name: Checkout
         uses: actions/checkout@v4

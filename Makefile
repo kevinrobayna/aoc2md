@@ -35,7 +35,11 @@ lint:
 lint-fix:
 	$(LINT_COMMAND) --fix
 
+goreleaser-check:
+	goreleaser check
+
 .PHONY: install
 install:
 	go mod download
 	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	go install github.com/goreleaser/goreleaser/v2@latest

@@ -1,17 +1,13 @@
 name: goreleaser
-
 on:
   push:
     tags:
       - v*.*.*
-
 concurrency:
   group: goreleaser
   cancel-in-progress: true
-
 permissions:
   contents: write
-
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -26,7 +22,7 @@ jobs:
       - uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: latest
+          version: ~> v2
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

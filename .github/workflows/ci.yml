@@ -56,7 +56,7 @@ jobs:
           version: latest
           args: --timeout 5m
   goreleaser-check:
-    name: GoRelease
+    name: GoReleaserCheck
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

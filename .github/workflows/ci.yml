@@ -53,6 +53,11 @@ jobs:
         with:
           version: latest
           args: --timeout 5m
+      - uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
   vuln:
     name: Vuln
     runs-on: ubuntu-latest

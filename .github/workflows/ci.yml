@@ -25,7 +25,7 @@ jobs:
           go-version: stable
           check-latest: true
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Go Format
         run: gofmt -s -w . && git diff --exit-code
       - name: Go Tidy
@@ -49,7 +49,7 @@ jobs:
           go-version: stable
           check-latest: true
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Lint
         uses: golangci/golangci-lint-action@v6
         with:
@@ -66,7 +66,7 @@ jobs:
           go-version: stable
           check-latest: true
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Check release file
         uses: goreleaser/goreleaser-action@v6
         with:
@@ -87,7 +87,7 @@ jobs:
           go-version: stable
           check-latest: true
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install govulncheck
         run: go install golang.org/x/vuln/cmd/govulncheck@latest
       - name: Run govulncheck

@@ -23,7 +23,7 @@ jobs:
         go-version: [stable, oldstable]
     steps:
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
           check-latest: true
@@ -50,7 +50,7 @@ jobs:
         go-version: [stable, oldstable]
     steps:
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
           check-latest: true
@@ -67,7 +67,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: stable
           check-latest: true
@@ -91,7 +91,7 @@ jobs:
         go-version: [stable, oldstable]
     steps:
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ matrix.go-version }}
           check-latest: true

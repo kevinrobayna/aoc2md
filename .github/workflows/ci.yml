@@ -15,14 +15,17 @@ concurrency:
   cancel-in-progress: true
 jobs:
   check:
-    name: Check
+    name: Check (${{ matrix.go-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      matrix:
+        go-version: [stable, oldstable]
     steps:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: stable
+          go-version: ${{ matrix.go-version }}
           check-latest: true
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,21 +42,24 @@ jobs:
       - name: Go Build
         run: make build
   lint:
-    name: Lint
+    name: Lint (${{ matrix.go-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      matrix:
+        go-version: [stable, oldstable]
     steps:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: stable
+          go-version: ${{ matrix.go-version }}
           check-latest: true
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v7
         with:
-          version: latest
+          version: v2.10.1
           args: --timeout 5m
   goreleaser-check:
     name: GoReleaserCheck
@@ -72,19 +78,22 @@ jobs:
         with:
           distribution: goreleaser
           version: ~> v2
-          args: check 
+          args: check
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAPS_PAT: ${{ secrets.HOMEBREW_TAPS_PAT }}
   vuln:
-    name: Vuln
+    name: Vuln (${{ matrix.go-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    strategy:
+      matrix:
+        go-version: [stable, oldstable]
     steps:
       - name: Install Go
         uses: actions/setup-go@v5
         with:
-          go-version: stable
+          go-version: ${{ matrix.go-version }}
           check-latest: true
       - name: Checkout
         uses: actions/checkout@v4

@@ -73,7 +73,7 @@ func main() {
 					if slices.Contains(allowedValues, v) {
 						return nil
 					}
-					return fmt.Errorf("Invalid language provided '%v', we currently support: %v", v, allowedValues)
+					return fmt.Errorf("invalid language provided '%v', we currently support: %v", v, allowedValues)
 				},
 			},
 		},

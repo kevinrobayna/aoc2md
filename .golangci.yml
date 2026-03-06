@@ -1,21 +1,16 @@
+version: "2"
 linters:
-  disable-all: true # We do this to own which linters we want to enable.
+  default: none
   enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - unused
     - asciicheck
+    - copyloopvar
+    - errcheck
     - errname
     - errorlint
     - exhaustive
-    - copyloopvar
     - gosec
-    - exhaustive
-    - gofumpt
-    - goimports
+    - govet
+    - ineffassign
     - makezero
     - nakedret
     - nosprintfhostport
@@ -23,24 +18,49 @@ linters:
     - predeclared
     - rowserrcheck
     - sqlclosecheck
-    - tenv
+    - staticcheck
     - tparallel
     - unparam
+    - unused
     - usestdlibvars
     - wastedassign
+  settings:
+    errorlint:
+      errorf: true
+    makezero:
+      always: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters: [gosec]
+        text: "G704" # SSRF via taint analysis - URLs are constructed from user-provided CLI flags
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+formatters:
+  enable:
     - gci
-linters-settings:
-  errorlint:
-    errorf: true
-  makezero:
-    always: true
-  gci:
-    sections:
-      - standard
-      - prefix(github.com/kevinrobayna)
-      - prefix(github.com/kevinrobayna/aoc2md)
-      - default
-  gofumpt:
-    module-path: github.com/kevinrobayna/aoc2md
-    extra-rules: true
-
+    - gofumpt
+    - goimports
+  settings:
+    gci:
+      sections:
+        - standard
+        - prefix(github.com/kevinrobayna)
+        - prefix(github.com/kevinrobayna/aoc2md)
+        - default
+    gofumpt:
+      module-path: github.com/kevinrobayna/aoc2md
+      extra-rules: true
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

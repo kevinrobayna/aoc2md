@@ -1,6 +1,6 @@
 module github.com/kevinrobayna/aoc2md
 
-go 1.24.0
+go 1.26
 
 require (
 	github.com/JohannesKaufmann/html-to-markdown v1.6.0

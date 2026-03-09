@@ -74,7 +74,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
       - name: Check release file
-        uses: goreleaser/goreleaser-action@v6
+        uses: goreleaser/goreleaser-action@v7
         with:
           distribution: goreleaser
           version: ~> v2

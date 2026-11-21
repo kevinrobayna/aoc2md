@@ -19,18 +19,22 @@ def solve2(input)
 end
 
 class AoCTest < Minitest::Test
-  def test_solve
-    test = <<~INPUT
-    INPUT
-    assert_equal 0, solve(test)
+  EXAMPLE = <<~INPUT
+  INPUT
+
+  def test_solve_example
+    assert_equal 0, solve(EXAMPLE)
   end
 
-  def test_solve2
-    test = <<~INPUT
-    INPUT
-    assert_equal 0, solve2(test)
+  def test_solve_input
+    assert_equal 0, solve(read_file('input.txt'))
+  end
+
+  def test_solve2_example
+    assert_equal 0, solve2(EXAMPLE)
+  end
+
+  def test_solve2_input
+    assert_equal 0, solve2(read_file('input.txt'))
   end
 end
-
-puts 'Part1', solve(read_file('input.txt'))
-puts 'Part2', solve2(read_file('input.txt'))

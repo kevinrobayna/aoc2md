@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log/slog"
 	"os"
@@ -8,8 +9,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/charmbracelet/log"
-	"github.com/urfave/cli/v2"
+	"charm.land/log/v2"
+	"github.com/urfave/cli/v3"
 
 	"github.com/kevinrobayna/aoc2md/internal"
 )
@@ -22,13 +23,13 @@ var (
 )
 
 func main() {
-	cli.VersionPrinter = func(_ *cli.Context) {
+	cli.VersionPrinter = func(_ *cli.Command) {
 		_, _ = fmt.Printf(
 			"Application: %s\nVersion: %s\nCommit: %s\nGo Version: %v\nGo OS/Arch: %v/%v\nBuilt at: %v\n",
 			appName, version, commit, runtime.Version(), runtime.GOOS, runtime.GOARCH, date,
 		)
 	}
-	app := &cli.App{
+	cmd := &cli.Command{
 		Name:        appName,
 		Description: "CLI to help initialise the solution for Advent of Code 🎄. Solving it though it on you 😉",
 		Version:     version,
@@ -38,7 +39,7 @@ func main() {
 				Aliases:  []string{"s"},
 				Usage:    "Session granted by adventofcode.com when you log in",
 				Required: false,
-				EnvVars:  []string{"AOC_SESSION"},
+				Sources:  cli.EnvVars("AOC_SESSION"),
 			},
 			&cli.IntFlag{
 				Name:        "day",
@@ -62,7 +63,7 @@ func main() {
 				Usage:    "Programming language to generate the solution for",
 				Required: false,
 				Value:    "none",
-				Action: func(ctx *cli.Context, v string) error {
+				Action: func(_ context.Context, _ *cli.Command, v string) error {
 					if v == "" {
 						return nil
 					}
@@ -77,16 +78,16 @@ func main() {
 				},
 			},
 		},
-		Action: func(ctx *cli.Context) error {
+		Action: func(_ context.Context, cmd *cli.Command) error {
 			handler := log.NewWithOptions(os.Stderr, log.Options{
 				ReportCaller:    false,
 				ReportTimestamp: false,
 				Prefix:          "🎄aoc2md🎄",
 			})
-			session := internal.Session(ctx.String("session"))
-			day := ctx.Int("day")
-			year := ctx.Int("year")
-			lang := ctx.String("lang")
+			session := internal.Session(cmd.String("session"))
+			day := cmd.Int("day")
+			year := cmd.Int("year")
+			lang := cmd.String("lang")
 			slog.SetDefault(slog.New(handler).With("day", day, "year", year, "lang", lang))
 			if session == "" {
 				slog.Error("The session is required so that you can download your input and part2. see --help")
@@ -118,7 +119,7 @@ func main() {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	if err := cmd.Run(context.Background(), os.Args); err != nil {
 		log.Fatal(err)
 	}
 }

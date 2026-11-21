@@ -29,16 +29,29 @@ archives:
         formats: 
           - zip
 
-brews:
-  - repository:
+homebrew_casks:
+  - name: aoc2md
+    binaries:
+      - aoc2md
+    directory: Casks
+    homepage: "https://kevinrobayna.com"
+    description: "The aoc2md tool to generate project setup 🎄"
+    commit_msg_template: "Brew cask update for {{ .ProjectName }} version {{ .Tag }}"
+    repository:
       owner: "kevinrobayna"
       name: homebrew-tap
+      branch: main
       token: "{{ .Env.HOMEBREW_TAPS_PAT }}"
     commit_author:
       name: "Kevin Robayna"
       email: "me@kevinrobayna.com"
-    homepage: "https://kevinrobayna.com"
-    description: "The aoc2md tool to generate project setup 🎄"
+    hooks:
+      post:
+        # The binary is not notarized, so drop the quarantine flag to keep Gatekeeper from blocking it.
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/aoc2md"]
+          end
 
 changelog:
   sort: asc

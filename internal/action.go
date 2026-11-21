@@ -9,10 +9,14 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
-	md "github.com/JohannesKaufmann/html-to-markdown"
-	"github.com/JohannesKaufmann/html-to-markdown/plugin"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/converter"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/base"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/commonmark"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/strikethrough"
+	"github.com/JohannesKaufmann/html-to-markdown/v2/plugin/table"
 	"github.com/PuerkitoBio/goquery"
 )
 
@@ -37,6 +41,8 @@ type templateData struct {
 	year int
 	day  int
 }
+
+const aocURL = "https://adventofcode.com"
 
 //go:embed templates/*.tmpl
 var templateFS embed.FS
@@ -143,8 +149,11 @@ func prepareRequest(url string, session Session) (*http.Request, error) {
 	}
 
 	cookie := &http.Cookie{
-		Name:  "session",
-		Value: string(session),
+		Name:     "session",
+		Value:    string(session),
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
 	}
 	req.AddCookie(cookie)
 
@@ -157,7 +166,7 @@ func prepareRequest(url string, session Session) (*http.Request, error) {
 
 func fetchInput(year, day int, session Session) (string, error) {
 	client := &http.Client{}
-	req, err := prepareRequest(fmt.Sprintf("https://adventofcode.com/%d/day/%d/input", year, day), session)
+	req, err := prepareRequest(fmt.Sprintf("%s/%d/day/%d/input", aocURL, year, day), session)
 	if err != nil {
 		return "", err
 	}
@@ -180,7 +189,7 @@ func fetchInput(year, day int, session Session) (string, error) {
 
 func fetchDescription(year, day int, session Session) (string, error) {
 	client := &http.Client{}
-	req, err := prepareRequest(fmt.Sprintf("https://adventofcode.com/%d/day/%d", year, day), session)
+	req, err := prepareRequest(fmt.Sprintf("%s/%d/day/%d", aocURL, year, day), session)
 	if err != nil {
 		return "", err
 	}
@@ -192,17 +201,38 @@ func fetchDescription(year, day int, session Session) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	return convertDescription(resp.Body)
+}
+
+// convertDescription converts the puzzle descriptions (<article class="day-desc">)
+// of an AoC HTML page into GitHub-flavored markdown.
+func convertDescription(r io.Reader) (string, error) {
+	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		slog.Error("Unable to parse HTML response from AOC", "err", err)
 		return "", err
 	}
-	// Find the content of the <article> element with class "day-desc"
-	converter := md.NewConverter(md.DomainFromURL("https://adventofcode.com"), true, nil)
-	// Use the `GitHubFlavored` plugin from the `plugin` package.
-	converter.Use(plugin.GitHubFlavored())
-	markdown := converter.Convert(doc.Find(".day-desc"))
-	return markdown, nil
+	conv := converter.NewConverter(converter.WithPlugins(
+		base.NewBasePlugin(),
+		commonmark.NewCommonmarkPlugin(
+			commonmark.WithEmDelimiter("_"),
+			commonmark.WithBulletListMarker("-"),
+		),
+		table.NewTablePlugin(),
+		strikethrough.NewStrikethroughPlugin(),
+	))
+
+	articles := doc.Find(".day-desc").Nodes
+	parts := make([]string, 0, len(articles))
+	for _, article := range articles {
+		markdown, err := conv.ConvertNode(article, converter.WithDomain(aocURL))
+		if err != nil {
+			slog.Error("Unable to convert description to markdown", "err", err)
+			return "", err
+		}
+		parts = append(parts, string(markdown))
+	}
+	return strings.Join(parts, "\n\n"), nil
 }
 
 func writeToFile(filePath, content string) error {

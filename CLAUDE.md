@@ -14,15 +14,14 @@ aoc2md is a Go CLI that initializes Advent of Code puzzle solutions. It fetches 
 - `make install` — Install Go dependencies and dev tools (golangci-lint, goreleaser)
 - `go vet ./...` — Run Go vet checks
 - `gofmt -s -w .` — Format code
-
-There are no tests in this project currently.
+- `go test ./...` — Run tests (`go test ./internal -update` regenerates golden files in `internal/testdata`)
 
 ## Architecture
 
-Single-command CLI built with `urfave/cli/v2`. Entry point is `main.go` which handles flag parsing and validation. Core logic lives in `internal/action.go`:
+Single-command CLI built with `urfave/cli/v3`. Entry point is `main.go` which handles flag parsing and validation. Core logic lives in `internal/action.go`:
 
 - Fetches puzzle HTML from adventofcode.com using a session cookie
-- Converts HTML to GitHub-flavored markdown via `html-to-markdown` + `goquery`
+- Converts HTML to GitHub-flavored markdown via `html-to-markdown/v2` + `goquery`
 - Writes `README.md` (problem description) and `input.txt` to `{year}/day-{DD}/`
 - Optionally renders a solution template from `internal/templates/*.tmpl` using Go's `text/template`
 

@@ -4,13 +4,14 @@ go 1.27.4
 
 require (
 	charm.land/log/v2 v2.0.1
-	github.com/JohannesKaufmann/html-to-markdown v1.6.0
+	github.com/JohannesKaufmann/html-to-markdown/v2 v2.5.2
 	github.com/PuerkitoBio/goquery v1.14.0
 	github.com/urfave/cli/v3 v3.14.0
 )
 
 require (
 	charm.land/lipgloss/v2 v2.0.5 // indirect
+	github.com/JohannesKaufmann/dom v0.3.1 // indirect
 	github.com/andybalholm/cascadia v1.3.5 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
 	github.com/charmbracelet/ultraviolet v0.0.0-20251205161215-1948445e3318 // indirect
@@ -30,5 +31,4 @@ require (
 	golang.org/x/net v0.63.0 // indirect
 	golang.org/x/sync v0.25.0 // indirect
 	golang.org/x/sys v0.50.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

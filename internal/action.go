@@ -143,8 +143,11 @@ func prepareRequest(url string, session Session) (*http.Request, error) {
 	}
 
 	cookie := &http.Cookie{
-		Name:  "session",
-		Value: string(session),
+		Name:     "session",
+		Value:    string(session),
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
 	}
 	req.AddCookie(cookie)
 

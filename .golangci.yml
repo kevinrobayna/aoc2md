@@ -57,7 +57,9 @@ formatters:
         - default
     gofumpt:
       module-path: github.com/kevinrobayna/aoc2md
-      extra-rules: true
+      extra:
+        group-params: true
+        clothe-returns: true
   exclusions:
     generated: lax
     paths:

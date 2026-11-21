@@ -14,7 +14,7 @@ aoc2md is a Go CLI that initializes Advent of Code puzzle solutions. It fetches 
 - `make install` — Install Go dependencies and dev tools (golangci-lint, goreleaser)
 - `go vet ./...` — Run Go vet checks
 - `gofmt -s -w .` — Format code
-- `go test ./...` — Run tests (`go test ./internal -update` regenerates golden files in `internal/testdata`)
+- `go test ./...` — Run tests (template rendering checks in `internal/template_test.go`; `go test ./internal -update` regenerates golden files in `internal/testdata`)
 
 ## Architecture
 

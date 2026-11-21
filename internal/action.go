@@ -195,17 +195,20 @@ func fetchDescription(year, day int, session Session) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	return convertDescription(resp.Body)
+}
+
+// convertDescription converts the puzzle descriptions (<article class="day-desc">)
+// of an AoC HTML page into GitHub-flavored markdown.
+func convertDescription(r io.Reader) (string, error) {
+	doc, err := goquery.NewDocumentFromReader(r)
 	if err != nil {
 		slog.Error("Unable to parse HTML response from AOC", "err", err)
 		return "", err
 	}
-	// Find the content of the <article> element with class "day-desc"
 	converter := md.NewConverter(md.DomainFromURL("https://adventofcode.com"), true, nil)
-	// Use the `GitHubFlavored` plugin from the `plugin` package.
 	converter.Use(plugin.GitHubFlavored())
-	markdown := converter.Convert(doc.Find(".day-desc"))
-	return markdown, nil
+	return converter.Convert(doc.Find(".day-desc")), nil
 }
 
 func writeToFile(filePath, content string) error {

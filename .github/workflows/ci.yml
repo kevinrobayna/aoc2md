@@ -38,6 +38,8 @@ jobs:
         run: go mod verify
       - name: Go Build
         run: make build
+      - name: Go Test
+        run: go test -race ./...
   lint:
     name: Lint
     runs-on: ubuntu-latest

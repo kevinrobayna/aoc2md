@@ -8,7 +8,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/charmbracelet/log"
+	"charm.land/log/v2"
 	"github.com/urfave/cli/v2"
 
 	"github.com/kevinrobayna/aoc2md/internal"
